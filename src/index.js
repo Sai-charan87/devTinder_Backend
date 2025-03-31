@@ -25,6 +25,19 @@ app.get("/users",async (req,res)=>{
     res.status(400).send(err);
   }
 });
+app.delete("/user",async (req,res)=>{
+  try{
+const id=req.body.id;
+    const user= await User.findByIdAndDelete(id);
+    if(!user){
+      return res.status(404).send("User not found");
+    }
+    res.send("User deleted successfully");
+
+  }catch(err){
+    res.send(err);
+  }
+});
 app.get("/feed",async (req,res)=>{
   try{
     const users= await User.find();
@@ -33,6 +46,23 @@ app.get("/feed",async (req,res)=>{
   }
   catch(err){
     res.status(400).send(err);
+  }
+});
+app.patch("/user",async (req,res)=>{
+  const user=req.body;
+  const id=req.body.id;
+  try{
+    const updatedUser= await User.findByIdAndUpdate(id,user,{
+      new:true,
+      runValidators:true,
+    });
+    if(!updatedUser){
+      return res.status(404).send("User not found");
+    }
+    res.send("User updated successfully");
+  }catch(err)
+  {
+    res.send(err);
   }
 });
 
