@@ -8,12 +8,6 @@ const userSchema = new mongoose.Schema(
     maxlength: 50,
     trim: true,
 
-
-
-
-
-    
-
    },
     lastName:{
      type: String,
@@ -38,6 +32,14 @@ const userSchema = new mongoose.Schema(
         validate(value){
             if(!['male','female','other'].includes(value)){
                 throw new Error("Gender is not valid");
+            }
+        }
+    },
+    skills:{
+        type:[String],
+        validate(value){
+            if(value.length<1){
+                throw new Error("Skills are not valid");
             }
         }
     },
