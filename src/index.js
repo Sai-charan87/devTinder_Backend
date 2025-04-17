@@ -1,76 +1,18 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 const connectDb = require("./config/databases");
 const app = express();
+const cookieParser = require("cookie-parser");
+
+const Authmiddleware=require("./middlewares/Auth");
+const {authRouter} = require("./routes/auth");
+const {profileRouter} = require("./routes/profile");
+const {requestRouter} = require("./routes/request");
 app.use(cookieParser());
-const User = require("./models/user");
-const { validate } = require("./utils/validation");
-const Authmiddleware = require("./middlewares/Auth");
 app.use(express.json());
-app.post("/signup", async (req, res) => {
-const { email, password, firstname, lastname } = req.body;
-  const validation = validate(req);
+app.use("/",authRouter);
+app.use("/profile",profileRouter);
+app.use("/",requestRouter);
 
-  
-  try {
-    if (!validation.status) {
-      console.log(validation.message);
-      return res.status(400).send(validation.message);
-    }
-    const passwordHash = await bcrypt.hash(password, 10);
-    const user = new User({
-      firstName: firstname,
-      lastName: lastname,
-      email: email,
-      password: passwordHash,
-    });
-    console.log(user);
-    
-    await user.save();
-    res.send("User created successfully");
-  }
-  catch (err) {
-    res.status(400).send(err.message);
-  }
-
-});
-app.post("/login", async (req, res) => {
-  try{
-    const { email, password } = req.body;
-    const user=await User.findOne({ email });
-    if (!user) {
-      return res.status(400).send("Invalid email or password");
-    }
-    const isValidPassword = await user.validatePassword(password);
-   
-    if (!isValidPassword) {
-      return res.status(400).send("Invalid email or password");
-    }
-    if (isValidPassword) {
-     const token=await user.getJWT();
-      
-    res.cookie("token",token, { expires: new Date(Date.now() + 900000), httpOnly: true });
-    res.send("Login successful");
-    }
-   }catch(err){
-    res.status(400).send(err.message);
-  }
-});
-app.get("/profile",Authmiddleware, async (req, res) => {
- 
- 
-  try{
-const user=req.user;
-if(!user){
-  return res.status(401).send("Unauthorized");
-}
-res.send(user);
-  }catch(err){
-    res.status(400).send(err.message);
-  }
-});
 app.post("/sentconnectionrequest",Authmiddleware, async (req, res) => {  
   
   try{
