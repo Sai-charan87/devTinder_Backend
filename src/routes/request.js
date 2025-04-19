@@ -1,6 +1,7 @@
 const express = require("express");
 const requestRouter = express.Router();
 const Authmiddleware = require("../middlewares/Auth");
+<<<<<<< HEAD
 const ConnectionRequest = require("../models/connectionRequest");
 requestRouter.post("/send/:status/:toUserId",Authmiddleware, async (req, res) => {  
   
@@ -73,6 +74,14 @@ if (!validStatuses.includes(status)) {
 
 
     
+=======
+
+requestRouter.post("/sentconnectionrequest",Authmiddleware, async (req, res) => {  
+  
+  try{
+  
+     res.send("Connection request sent successfully");
+>>>>>>> 5933b694ab4dd0238bf0ba547f341241068a13da
   }
 catch(err){
     res.status(400).send(err.message);

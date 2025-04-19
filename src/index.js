@@ -11,7 +11,11 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/",authRouter);
 app.use("/profile",profileRouter);
+<<<<<<< HEAD
 app.use("/request",requestRouter);
+=======
+app.use("/",requestRouter);
+>>>>>>> 5933b694ab4dd0238bf0ba547f341241068a13da
 
 app.post("/sentconnectionrequest",Authmiddleware, async (req, res) => {  
   
